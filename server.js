@@ -8,10 +8,14 @@ const users = require('./user');
 const posts = require('./tables/post');
 const comments = require('./tables/comment');
 const reactions = require('./tables/reaction');
+const path = require('path');
 
 const app = express();
 const port = Number(process.env.PORT || 3100);
 app.use(express.json({ limit: '100kb' }));
+
+const frontendDist = path.join(__dirname, 'frontend', 'dist');
+app.use(express.static(frontendDist));
 
 app.get('/', (_req, res) => res.json({
   message: 'Blog API is running',
@@ -68,7 +72,12 @@ app.get('/health', async (_req, res) => {
   }
 });
 
-app.use((req, res) => res.status(404).json({ error: `Route not found: ${req.method} ${req.path}` }));
+app.use((req, res) => {
+  if (req.method === 'GET' && !req.path.startsWith('/api/')) {
+    return res.sendFile(path.join(frontendDist, 'index.html'));
+  }
+  return res.status(404).json({ error: `Route not found: ${req.method} ${req.path}` });
+});
 app.use((error, _req, res, _next) => {
   console.error('Request error:', error.message);
   if (error.code) return handleDatabaseError(res, error, 'Database request failed');
