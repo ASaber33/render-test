@@ -17,7 +17,14 @@ app.use(express.json({ limit: '100kb' }));
 const frontendDist = path.join(__dirname, 'frontend', 'dist');
 app.use(express.static(frontendDist));
 
-app.get('/', (_req, res) => res.sendFile(path.join(frontendDist, 'index.html')));
+app.get('/', (_req, res) => res.json({
+  message: 'Blog API is running',
+  routes: [
+    '/register', '/login', '/profile', '/users', '/users/:id', '/users/:id/role', '/posts', '/posts/:id',
+    '/posts/:id/comments', '/comments', '/posts/:id/reaction',
+    '/posts/:id/reactions', '/reactions', '/reactions/:id', '/health',
+  ],
+}));
 
 // Authentication and user administration.
 app.post('/register', users.register);
