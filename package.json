@@ -8,7 +8,7 @@
   "scripts": {
     "start": "node server.js",
     "dev": "node --watch server.js",
-    "build": "node --check server.js && node --check user.js && node --check tables/userDb.js && node --check tables/post.js && node --check tables/comment.js && node --check tables/reaction.js"
+    "build": "npm ci --prefix frontend && node --check server.js && node --check user.js && node --check tables/userDb.js && node --check tables/post.js && node --check tables/comment.js && node --check tables/reaction.js && npm --prefix frontend run build"
   },
   "dependencies": {
     "@neon/config": "^1.9.2",
